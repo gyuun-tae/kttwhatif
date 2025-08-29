@@ -15,29 +15,12 @@ const CHAT_VERSION = "4.0";
 export const ChatInterface = () => {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const { currentSession, addTurn } = useSession();
   const { toast } = useToast();
 
   console.log(`채팅 인터페이스 렌더링 - 버전 ${CHAT_VERSION}, 현재세션ID: ${currentSession?.id}, 세션 발견: ${!!currentSession}`);
-
-  // 스크롤을 아래로 이동
-  const scrollToBottom = () => {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
-  };
-
-  // 새 메시지가 추가될 때마다 스크롤 이동
-  useEffect(() => {
-    const timer = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timer);
-  }, [currentSession?.turns]);
 
   const handleSendMessage = async (retryCount = 0) => {
     if (!message.trim() || isLoading || !currentSession) return;
@@ -148,7 +131,7 @@ export const ChatInterface = () => {
     <div className="flex flex-col h-full">
       {/* 대화 내용 */}
       <div className="flex-1 min-h-0">
-        <ScrollArea ref={scrollAreaRef} className="h-full">
+        <ScrollArea className="h-[calc(100vh-12rem)]">
           <div className="p-4">
             <div className="space-y-4 max-w-4xl mx-auto">
               <div className="text-center text-xs text-muted-foreground mb-4">
